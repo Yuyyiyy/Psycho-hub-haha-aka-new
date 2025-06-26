@@ -1,266 +1,373 @@
+-- SERVICES
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local LocalPlayer = Players.LocalPlayer
 
-local allowedUsers = {
-    "Test1", "test2", "test3", "psychopowerful90", "test5",
-    "Test6", "Test7", "Test8", "Test9", "Test10",
-    "Test11", "Test12", "Test13", "Test14", "Test15",
-    "testUser16", "testUser17", "testUser18", "testUser19", "testUser20",
-    "testUser21", "testUser22", "testUser23", "testUser24", "testUser25",
-    "testUser26", "testUser27", "testUser28", "testUser29", "testUser30",
-    "testUser31", "testUser32", "testUser33", "testUser34", "testUser35",
-    "testUser36"
-}
+-- COLORS
+local darkNavyBlue = Color3.fromRGB(10, 20, 40)
+local darkGold = Color3.fromRGB(180, 140, 30)
+local defaultBtnColor = Color3.fromRGB(25, 25, 45)
+local standardBtnColor = Color3.fromRGB(30, 30, 60)
+local whiteText = Color3.fromRGB(255, 255, 255)
 
-if not table.find(allowedUsers, player.Name) then
-    player:Kick("HAHA  🖕🖕STUPID 🤣")
-    return
-end
+-- STATES
+local toggleOpen = false
+local loopList = {}
+local playerButtons = {}
+local speedBoostOn = false
+local frontLoopMode = false
+local loopbringAllActive = false
+local attachModeOn = false
+local twoSidePositionOn = false
+local myDeaths = 0
 
-local screenGui = Instance.new("ScreenGui", playerGui)
-screenGui.Name = "PsychoHAHub"
-screenGui.ResetOnSpawn = false
+-- GUI SETUP
+local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+gui.Name = "PsychoLoopbring"
+gui.ResetOnSpawn = false
 
-local toggleGroup = Instance.new("Frame")
-toggleGroup.Name = "ToggleGroup"
-toggleGroup.Parent = screenGui
-toggleGroup.BackgroundTransparency = 1
-toggleGroup.Size = UDim2.new(0, 80, 0, 80)
-toggleGroup.AnchorPoint = Vector2.new(0.5, 0.5)
-toggleGroup.Position = UDim2.new(0.93, 0, 0.05, 0)
+local toggle = Instance.new("TextButton", gui)
+toggle.Size = UDim2.new(0, 140, 0, 30)
+toggle.Position = UDim2.new(0, 10, 0, 10)
+toggle.BackgroundColor3 = darkNavyBlue
+toggle.TextColor3 = darkGold
+toggle.Text = "Psycho Loopbring"
+toggle.Font = Enum.Font.GothamBold
+toggle.TextSize = 14
+toggle.BorderSizePixel = 0
 
-local backgroundCircle = Instance.new("Frame", toggleGroup)
-backgroundCircle.Name = "BackgroundCircle"
-backgroundCircle.Size = UDim2.new(1, 0, 1, 0)
-backgroundCircle.BackgroundColor3 = Color3.fromRGB(10, 10, 25)
-backgroundCircle.BorderSizePixel = 0
-backgroundCircle.AnchorPoint = Vector2.new(0.5, 0.5)
-backgroundCircle.Position = UDim2.new(0.5, 0, 0.5, 0)
-Instance.new("UICorner", backgroundCircle).CornerRadius = UDim.new(1, 0)
-local bgStroke = Instance.new("UIStroke", backgroundCircle)
-bgStroke.Thickness = 2
-bgStroke.Color = Color3.fromRGB(255, 215, 0)
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 240, 0, 380)
+frame.Position = UDim2.new(0, 10, 0, 50)
+frame.BackgroundColor3 = darkNavyBlue
+frame.BorderSizePixel = 0
+frame.Visible = false
+frame.Active = true
+frame.Draggable = true
 
-local toggleButton = Instance.new("TextButton", toggleGroup)
-toggleButton.Name = "ToggleButton"
-toggleButton.Text = "🤣"
-toggleButton.Font = Enum.Font.SourceSansBold
-toggleButton.TextSize = 28
-toggleButton.TextColor3 = Color3.fromRGB(255, 215, 0)
-toggleButton.BackgroundTransparency = 1
-toggleButton.BorderSizePixel = 0
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0.5, 0, 0.5, 0)
-toggleButton.AnchorPoint = Vector2.new(0.5, 0.5)
-Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
-local emojiStroke = Instance.new("UIStroke", toggleButton)
-emojiStroke.Thickness = 2
-emojiStroke.Color = Color3.fromRGB(255, 215, 0)
-emojiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
-local hahaTextOuter = "HAHAHAHA"
-local outerLetters = {}
-local outerRadius = 35
-
-for i = 1, #hahaTextOuter do
-    local char = Instance.new("TextLabel", toggleGroup)
-    char.Name = "OuterLetter"..i
-    char.Text = hahaTextOuter:sub(i, i)
-    char.Font = Enum.Font.SourceSansBold
-    char.TextSize = 12
-    char.TextColor3 = Color3.fromRGB(255, 215, 0)
-    char.BackgroundTransparency = 1
-    char.Size = UDim2.new(0, 14, 0, 14)
-    char.AnchorPoint = Vector2.new(0.5, 0.5)
-    outerLetters[i] = char
-end
-
-local hahaTextInner = "HAHA"
-local innerLetters = {}
-local innerRadius = 20
-
-for i = 1, #hahaTextInner do
-    local char = Instance.new("TextLabel", toggleGroup)
-    char.Name = "InnerLetter"..i
-    char.Text = hahaTextInner:sub(i, i)
-    char.Font = Enum.Font.SourceSansBold
-    char.TextSize = 10
-    char.TextColor3 = Color3.fromRGB(255, 215, 0)
-    char.BackgroundTransparency = 1
-    char.Size = UDim2.new(0, 12, 0, 12)
-    char.AnchorPoint = Vector2.new(0.5, 0.5)
-    innerLetters[i] = char
-end
-
-local rotationOuter = 0
-local rotationInner = 0
-local speedOuter = math.rad(60)
-local speedInner = -math.rad(90)
-
-RunService.RenderStepped:Connect(function(dt)
-    rotationOuter = (rotationOuter + speedOuter * dt) % (2 * math.pi)
-    rotationInner = (rotationInner + speedInner * dt) % (2 * math.pi)
-
-    local centerX = toggleGroup.AbsoluteSize.X / 2
-    local centerY = toggleGroup.AbsoluteSize.Y / 2
-
-    for i, letter in ipairs(outerLetters) do
-        local angle = (2 * math.pi / #outerLetters) * (i - 1) + rotationOuter
-        local x = centerX + outerRadius * math.cos(angle)
-        local y = centerY + outerRadius * math.sin(angle)
-        letter.Position = UDim2.new(0, x, 0, y)
-    end
-
-    for i, letter in ipairs(innerLetters) do
-        local angle = (2 * math.pi / #innerLetters) * (i - 1) + rotationInner
-        local x = centerX + innerRadius * math.cos(angle)
-        local y = centerY + innerRadius * math.sin(angle)
-        letter.Position = UDim2.new(0, x, 0, y)
-    end
-end)
-
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Name = "MainFrame"
-mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 25)
-mainFrame.BorderColor3 = Color3.fromRGB(255, 215, 0)
-mainFrame.Position = UDim2.new(0.25, 0, 0.2, 0)
-mainFrame.Size = UDim2.new(0, 500, 0, 420)
-mainFrame.Visible = true
-mainFrame.BorderSizePixel = 4
-mainFrame.Active = true
-mainFrame.Draggable = true
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 15)
-local mainStroke = Instance.new("UIStroke", mainFrame)
-mainStroke.Thickness = 3
-mainStroke.Color = Color3.fromRGB(184, 134, 11)
-
-local title = Instance.new("TextLabel", mainFrame)
-title.Text = "🤣Psycho HA Hub🤣"
-title.Font = Enum.Font.SourceSansBold
-title.TextSize = 42
-title.TextColor3 = Color3.fromRGB(255, 215, 0)
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -20, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 5)
 title.BackgroundTransparency = 1
-title.Position = UDim2.new(0.05, 0, 0.01, 0)
-title.Size = UDim2.new(0.9, 0, 0.15, 0)
+title.Text = "Psycho Loopbring"
+title.TextColor3 = darkGold
+title.TextScaled = true
+title.Font = Enum.Font.FredokaOne
+title.TextXAlignment = Enum.TextXAlignment.Left
 
-local scroll = Instance.new("ScrollingFrame", mainFrame)
+local scroll = Instance.new("ScrollingFrame", frame)
+scroll.Position = UDim2.new(0, 10, 0, 40)
+scroll.Size = UDim2.new(1, -20, 1, -50)
 scroll.BackgroundTransparency = 1
-scroll.Size = UDim2.new(1, -20, 0.65, 0)
-scroll.Position = UDim2.new(0, 10, 0.2, 0)
-scroll.ScrollBarThickness = 6
 scroll.BorderSizePixel = 0
 scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-Instance.new("UICorner", scroll).CornerRadius = UDim.new(0, 10)
-local scrollStroke = Instance.new("UIStroke", scroll)
-scrollStroke.Thickness = 2
-scrollStroke.Color = Color3.fromRGB(184, 134, 11)
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scroll.ScrollBarThickness = 5
+scroll.ClipsDescendants = true
 
-local layout = Instance.new("UIGridLayout", scroll)
-layout.CellSize = UDim2.new(0, 140, 0, 50)
-layout.CellPadding = UDim2.new(0, 10, 0, 10)
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
-end)
+local layout = Instance.new("UIListLayout", scroll)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Padding = UDim.new(0, 3)
 
-local pageButtonsFrame = Instance.new("Frame", mainFrame)
-pageButtonsFrame.Name = "PageButtonsFrame"
-pageButtonsFrame.BackgroundTransparency = 1
-pageButtonsFrame.Position = UDim2.new(0, 10, 0.87, 0)
-pageButtonsFrame.Size = UDim2.new(1, -20, 0, 40)
+-- UTILITIES
+local function tweenColor(object, color, duration)
+    TweenService:Create(object, TweenInfo.new(duration or 0.25), {BackgroundColor3 = color}):Play()
+end
 
-local pageBtn = Instance.new("TextButton", pageButtonsFrame)
-pageBtn.Name = "PageButton1"
-pageBtn.Text = "1"
-pageBtn.Font = Enum.Font.SourceSansSemibold
-pageBtn.TextColor3 = Color3.fromRGB(255, 215, 0)
-pageBtn.TextSize = 18
-pageBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
-pageBtn.BorderColor3 = Color3.fromRGB(255, 215, 0)
-pageBtn.Size = UDim2.new(0, 30, 0, 30)
-Instance.new("UICorner", pageBtn).CornerRadius = UDim.new(0, 6)
-
-local buttonsPagesData = {{
-    {Text = "Instant Spawn", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/6c6a1996b7efda399ee6c667a0e96510/raw/dce1e15f00e12059b72516403f01401d950913cf/gistfile1.txt"},
-    {Text = "", ScriptLink = ""},
-    {Text = "No cooldown 75%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/246d84003ec77b3348b785f4c4b40951/raw/2e03b6f231e8ddeba6c7e40afedd919907138ddf/gistfile1.txt"},
-    {Text = "No cooldown 100%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/6ef6b257e0b73fb796474c0cd331cd55/raw/d929d2510011d020196334e66c7ad8149d4899bc/gistfile1.txt"},
-    {Text = "Aura", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/69cd1fb21a09185e359a3eb706108aa9/raw/94e203ae28989cbe5c4c5fa2f9bf0f1263937738/gistfile1.txt"},
-    {Text = "No clip for damage hitbox", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/04661c54b473431b9ab554de484e1e1f/raw/2a08e9b05c7cd4c64001138728a6b3c316a805e7/gistfile1.txt"},
-    {Text = "Script 7", ScriptLink = "https://pastebin.com/raw/example7"},
-    {Text = "Script 8", ScriptLink = "https://pastebin.com/raw/example8"},
-    {Text = "Script 9", ScriptLink = "https://pastebin.com/raw/example9"},
-    {Text = "Auto grab", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/eb3b21915928414653a2b8dd9a40980e/raw/782a51c0004924e47d86c0c008acd280e5af16c3/gistfile1.txt"},
-    {Text = "spt auto grab", ScriptLink = "https://pastebin.com/raw/MHN7tVU8"},
-    {Text = "loopbring", ScriptLink = "https://pastebin.com/raw/QBqps63Y"},
-    {Text = "usetools", ScriptLink = "https://pastebin.com/raw/fnGNW8Lk"},
-    {Text = "damage kill", ScriptLink = "https://pastebin.com/raw/MFr8E9ag"},
-    {Text = "Damage hitbox", ScriptLink = "https://pastebin.com/raw/63T2aMVi"},
-    {Text = "anti lag", ScriptLink = "https://pastebin.com/raw/mPm7QEpB"},
-    {Text = "Lag server", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/6f38723afc3d835dc1f8bc96b9f61bd8/raw/9d7b2525de18a7f1220d5c78fcfdf34b7da5e05f/gistfile1.txt"},
-    {Text = "No cooldown 20%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/435a09384699c8f3e910444d877f123c/raw/29721b83c34f0c51059a6839e978c1b0fc4a7570/gistfile1.txt"},
-    {Text = "No cooldown 30%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/602ad74771fa6ed8b0118b8b2303c0cb/raw/a90c5000987fe694ae8fd250df0e981032245b4a/gistfile1.txt"},
-    {Text = "No cooldown 50%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/b2fc36b1230d4bb9b06db2a419f50a8a/raw/e442c967add6123afd88d717b773361f7ad62af2/gistfile1.txt"},
-}}
-
-local currentPage = 1
-
-local function clearScroll()
-    for _, child in pairs(scroll:GetChildren()) do
-        if child:IsA("TextButton") then
-            child:Destroy()
+local function setNoClip(character, state)
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not state
         end
     end
 end
 
-local function createScriptButtons(page)
-    clearScroll()
-    local pageData = buttonsPagesData[page]
-    for index = 1, #pageData do
-        local data = pageData[index]
-        if data.Text ~= "" then
-            local button = Instance.new("TextButton", scroll)
-            button.Name = "ScriptButton" .. index
-            button.TextWrapped = true
-            button.TextYAlignment = Enum.TextYAlignment.Center
-            button.Text = data.Text
-            button.Font = Enum.Font.SourceSansSemibold
-            button.TextColor3 = Color3.fromRGB(255, 215, 0)
-            button.TextSize = 20
-            button.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
-            button.BorderColor3 = Color3.fromRGB(255, 215, 0)
-            button.AutoButtonColor = true
-            button.Size = UDim2.new(0, 140, 0, 50)
+-- TOGGLE UI
+toggle.MouseButton1Click:Connect(function()
+    toggleOpen = not toggleOpen
+    frame.Visible = toggleOpen
+end)
 
-            local btnCorner = Instance.new("UICorner", button)
-            btnCorner.CornerRadius = UDim.new(0, 8)
+-- SPEED BOOST BUTTON
+local speedButton = Instance.new("TextButton", scroll)
+speedButton.Size = UDim2.new(1, 0, 0, 28)
+speedButton.BackgroundColor3 = standardBtnColor
+speedButton.TextColor3 = whiteText
+speedButton.Font = Enum.Font.GothamBold
+speedButton.TextSize = 13
+speedButton.Text = "Speed Boost: OFF"
+speedButton.LayoutOrder = 1
 
-            local btnStroke = Instance.new("UIStroke", button)
-            btnStroke.Thickness = 1.5
-            btnStroke.Color = Color3.fromRGB(184, 134, 11)
-            btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+local function applySpeedBoost(state)
+    local char = LocalPlayer.Character
+    if char then
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            if state then
+                humanoid.WalkSpeed = 120
+                humanoid.JumpPower = 120
+                speedButton.Text = "Speed Boost: ON"
+                tweenColor(speedButton, darkGold)
+            else
+                humanoid.WalkSpeed = 16
+                humanoid.JumpPower = 50
+                speedButton.Text = "Speed Boost: OFF"
+                tweenColor(speedButton, standardBtnColor)
+            end
+        end
+    end
+end
 
-            button.MouseButton1Click:Connect(function()
-                print(data.Text .. " button clicked")
-                local success, err = pcall(function()
-                    loadstring(game:HttpGet(data.ScriptLink))()
-                end)
-                if not success then
-                    warn("Failed to load script:", err)
+speedButton.MouseButton1Click:Connect(function()
+    speedBoostOn = not speedBoostOn
+    applySpeedBoost(speedBoostOn)
+end)
+
+-- ATTACH MODE BUTTON
+local attachModeButton = Instance.new("TextButton", scroll)
+attachModeButton.Size = UDim2.new(1, 0, 0, 28)
+attachModeButton.BackgroundColor3 = standardBtnColor
+attachModeButton.TextColor3 = whiteText
+attachModeButton.Font = Enum.Font.GothamBold
+attachModeButton.TextSize = 13
+attachModeButton.Text = "Attach Mode: OFF"
+attachModeButton.LayoutOrder = 2
+
+attachModeButton.MouseButton1Click:Connect(function()
+    attachModeOn = not attachModeOn
+    attachModeButton.Text = attachModeOn and "Attach Mode: ON" or "Attach Mode: OFF"
+    tweenColor(attachModeButton, attachModeOn and darkGold or standardBtnColor)
+end)
+
+-- LOOPBRING ALL BUTTON
+local loopbringAllButton = Instance.new("TextButton", scroll)
+loopbringAllButton.Size = UDim2.new(1, 0, 0, 28)
+loopbringAllButton.BackgroundColor3 = standardBtnColor
+loopbringAllButton.TextColor3 = whiteText
+loopbringAllButton.Font = Enum.Font.GothamBold
+loopbringAllButton.TextSize = 13
+loopbringAllButton.Text = "Loopbring All: OFF"
+loopbringAllButton.LayoutOrder = 3
+
+loopbringAllButton.MouseButton1Click:Connect(function()
+    loopbringAllActive = not loopbringAllActive
+    loopbringAllButton.Text = loopbringAllActive and "Loopbring All: ON" or "Loopbring All: OFF"
+    tweenColor(loopbringAllButton, loopbringAllActive and darkGold or standardBtnColor)
+    
+    for name, btn in pairs(playerButtons) do
+        if Players:FindFirstChild(name) and name ~= LocalPlayer.Name then
+            loopList[name] = loopbringAllActive or nil
+            tweenColor(btn, loopbringAllActive and darkGold or defaultBtnColor)
+        end
+    end
+end)
+
+-- MY DEATHS LABEL
+local myDeathLabel = Instance.new("TextLabel", scroll)
+myDeathLabel.Size = UDim2.new(1, 0, 0, 28)
+myDeathLabel.BackgroundColor3 = standardBtnColor
+myDeathLabel.Text = "My Deaths: 0"
+myDeathLabel.TextColor3 = Color3.new(1, 0.2, 0.2)
+myDeathLabel.TextScaled = true
+myDeathLabel.Font = Enum.Font.GothamBold
+myDeathLabel.LayoutOrder = 4
+
+-- TWO SIDE POSITION BUTTON
+local twoSidePositionButton = Instance.new("TextButton", scroll)
+twoSidePositionButton.Size = UDim2.new(1, 0, 0, 28)
+twoSidePositionButton.BackgroundColor3 = standardBtnColor
+twoSidePositionButton.TextColor3 = whiteText
+twoSidePositionButton.Font = Enum.Font.GothamBold
+twoSidePositionButton.TextSize = 13
+twoSidePositionButton.Text = "2 Side Position: OFF"
+twoSidePositionButton.LayoutOrder = 5
+
+twoSidePositionButton.MouseButton1Click:Connect(function()
+    twoSidePositionOn = not twoSidePositionOn
+    twoSidePositionButton.Text = twoSidePositionOn and "2 Side Position: ON" or "2 Side Position: OFF"
+    tweenColor(twoSidePositionButton, twoSidePositionOn and darkGold or standardBtnColor)
+end)
+
+-- FRONT POSITION BUTTON
+local frontPositionButton = Instance.new("TextButton", scroll)
+frontPositionButton.Size = UDim2.new(1, 0, 0, 28)
+frontPositionButton.BackgroundColor3 = standardBtnColor
+frontPositionButton.TextColor3 = whiteText
+frontPositionButton.Font = Enum.Font.GothamBold
+frontPositionButton.TextSize = 13
+frontPositionButton.Text = "Front Position: OFF"
+frontPositionButton.LayoutOrder = 6
+
+frontPositionButton.MouseButton1Click:Connect(function()
+    frontLoopMode = not frontLoopMode
+    frontPositionButton.Text = frontLoopMode and "Front Position: ON" or "Front Position: OFF"
+    tweenColor(frontPositionButton, frontLoopMode and darkGold or standardBtnColor)
+end)
+
+-- LOOPBRING FUNCTIONS
+local function loopbringTwoSidePosition(myHRP, activeTargets)
+    for i, target in ipairs(activeTargets) do
+        local char = target.Character
+        if char then
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                setNoClip(char, true)
+                hrp.Velocity = Vector3.new(0, 0, 0)
+                hrp.RotVelocity = Vector3.new(0, 0, 0)
+
+                local side = (i % 2 == 1) and -1 or 1
+                local sideOffset = 0.5  -- Adjusted to 0.5 studs (to make it 1 stud distance between two targets)
+                local forwardOffset = 1  -- Adjusted to 1 stud distance to make it 1 stud apart
+
+                local targetPos = myHRP.Position + 
+                    myHRP.CFrame.RightVector * (side * sideOffset) + 
+                    myHRP.CFrame.LookVector * forwardOffset
+
+                targetPos = Vector3.new(targetPos.X, myHRP.Position.Y, targetPos.Z)
+                hrp.CFrame = CFrame.new(targetPos) * CFrame.Angles(0, math.rad(myHRP.Orientation.Y), 0)
+
+                -- Kill anyone touching the tool
+                local humanoid = hrp.Parent:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid.Health = 0 -- Kill the player
+                end
+            end
+        end
+    end
+end
+
+local function loopbringStandard(myHRP, name, target)
+    if target and target.Character then
+        local hrp = target.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            setNoClip(target.Character, true)
+            hrp.Velocity = Vector3.new(0, 0, 0)
+            hrp.RotVelocity = Vector3.new(0, 0, 0)
+            
+            local offset
+            if frontLoopMode then
+                offset = myHRP.CFrame.LookVector * 3 + Vector3.new(0, 1, 0)
+            else
+                offset = myHRP.CFrame.RightVector * 3 + myHRP.CFrame.LookVector + Vector3.new(0, 1, 0)
+            end
+            
+            hrp.CFrame = myHRP.CFrame + offset
+        end
+    end
+end
+
+-- ADD PLAYER BUTTONS
+local function addPlayerButton(targetPlayer)
+    if targetPlayer == LocalPlayer then return end
+
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 28)
+    button.BackgroundColor3 = defaultBtnColor
+    button.TextColor3 = whiteText
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 13
+    button.Text = targetPlayer.Name
+    button.LayoutOrder = 100
+    button.Parent = scroll
+
+    playerButtons[targetPlayer.Name] = button
+
+    -- Kill tracker label
+    local killLabel = Instance.new("TextLabel", button)
+    killLabel.Size = UDim2.new(0, 60, 1, 0)
+    killLabel.Position = UDim2.new(1, -65, 0, 0)
+    killLabel.BackgroundTransparency = 1
+    killLabel.TextColor3 = Color3.new(1, 0.2, 0.2)
+    killLabel.Font = Enum.Font.GothamBold
+    killLabel.TextSize = 12
+    killLabel.TextXAlignment = Enum.TextXAlignment.Right
+    killLabel.Text = "Kills: 0"
+
+    local kills = 0
+
+    -- Track kills
+    local function onCharacterAdded(char)
+        local humanoid = char:WaitForChild("Humanoid", 10)
+        if humanoid then
+            humanoid.Died:Connect(function()
+                local killerTool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                if killerTool then
+                    kills = kills + 1
+                    killLabel.Text = "Kills: " .. kills
                 end
             end)
         end
     end
+
+    if targetPlayer.Character then
+        onCharacterAdded(targetPlayer.Character)
+    end
+    targetPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+    button.MouseButton1Click:Connect(function()
+        local name = targetPlayer.Name
+        loopList[name] = not loopList[name]
+        tweenColor(button, loopList[name] and darkGold or defaultBtnColor)
+    end)
 end
 
-pageBtn.MouseButton1Click:Connect(function()
-    currentPage = 1
-    createScriptButtons(currentPage)
+-- Initialize player buttons
+for _, player in ipairs(Players:GetPlayers()) do
+    addPlayerButton(player)
+end
+Players.PlayerAdded:Connect(addPlayerButton)
+
+-- Track local player deaths
+LocalPlayer.CharacterAdded:Connect(function(char)
+    local humanoid = char:WaitForChild("Humanoid", 10)
+    if humanoid then
+        humanoid.Died:Connect(function()
+            myDeaths = myDeaths + 1
+            myDeathLabel.Text = "My Deaths: " .. myDeaths
+        end)
+    end
+    
+    -- Reapply speed boost if it was on
+    if speedBoostOn then
+        applySpeedBoost(true)
+    end
 end)
 
-createScriptButtons(currentPage)
-
-toggleButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = not mainFrame.Visible
+-- MAIN LOOPBRING EXECUTION WITH ATTACH MODE
+task.spawn(function()
+    while true do
+        local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if myHRP then
+            -- Get active targets
+            local activeTargets = {}
+            for name, active in pairs(loopList) do
+                if active then
+                    local target = Players:FindFirstChild(name)
+                    if target then
+                        table.insert(activeTargets, target)
+                    end
+                end
+            end
+            
+            -- Execute based on mode priority
+            if attachModeOn then
+                -- ATTACH MODE: Move local player to target
+                attachModeExecution(myHRP, activeTargets)
+            elseif twoSidePositionOn then
+                -- TWO SIDE POSITION MODE
+                loopbringTwoSidePosition(myHRP, activeTargets)
+            else
+                -- STANDARD LOOPBRING MODE
+                for name, active in pairs(loopList) do
+                    if active then
+                        local target = Players:FindFirstChild(name)
+                        loopbringStandard(myHRP, name, target)
+                    end
+                end
+            end
+        end
+        
+        task.wait(0.1)
+    end
 end)
