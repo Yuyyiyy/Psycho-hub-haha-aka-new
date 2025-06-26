@@ -1,10 +1,8 @@
--- SERVICES
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- Allowed users list
 local allowedUsers = {
     "Test1", "test2", "test3", "psychopowerful90", "test5",
     "Test6", "Test7", "Test8", "Test9", "Test10",
@@ -17,16 +15,14 @@ local allowedUsers = {
 }
 
 if not table.find(allowedUsers, player.Name) then
-    player:Kick("HAHA🖕🖕STUPID 🤣")
+    player:Kick("HAHA  🖕🖕STUPID 🤣")
     return
 end
 
--- GUI Setup
 local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.Name = "PsychoHAHub"
 screenGui.ResetOnSpawn = false
 
--- Toggle Group Frame
 local toggleGroup = Instance.new("Frame")
 toggleGroup.Name = "ToggleGroup"
 toggleGroup.Parent = screenGui
@@ -35,7 +31,6 @@ toggleGroup.Size = UDim2.new(0, 80, 0, 80)
 toggleGroup.AnchorPoint = Vector2.new(0.5, 0.5)
 toggleGroup.Position = UDim2.new(0.93, 0, 0.05, 0)
 
--- Background Circle for Toggle
 local backgroundCircle = Instance.new("Frame", toggleGroup)
 backgroundCircle.Name = "BackgroundCircle"
 backgroundCircle.Size = UDim2.new(1, 0, 1, 0)
@@ -48,10 +43,9 @@ local bgStroke = Instance.new("UIStroke", backgroundCircle)
 bgStroke.Thickness = 2
 bgStroke.Color = Color3.fromRGB(255, 215, 0)
 
--- Emoji Toggle Button
 local toggleButton = Instance.new("TextButton", toggleGroup)
 toggleButton.Name = "ToggleButton"
-toggleButton.Text = "😂"
+toggleButton.Text = "🤣"
 toggleButton.Font = Enum.Font.SourceSansBold
 toggleButton.TextSize = 28
 toggleButton.TextColor3 = Color3.fromRGB(255, 215, 0)
@@ -66,10 +60,9 @@ emojiStroke.Thickness = 2
 emojiStroke.Color = Color3.fromRGB(255, 215, 0)
 emojiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- Outer HAHA ring
-local hahaTextOuter = "HAHAHAHAHAHAHA"
+local hahaTextOuter = "HAHAHAHA"
 local outerLetters = {}
-local outerRadius = 38
+local outerRadius = 35
 
 for i = 1, #hahaTextOuter do
     local char = Instance.new("TextLabel", toggleGroup)
@@ -84,7 +77,6 @@ for i = 1, #hahaTextOuter do
     outerLetters[i] = char
 end
 
--- Inner HAHA ring
 local hahaTextInner = "HAHA"
 local innerLetters = {}
 local innerRadius = 20
@@ -129,7 +121,6 @@ RunService.RenderStepped:Connect(function(dt)
     end
 end)
 
--- Main Frame
 local mainFrame = Instance.new("Frame", screenGui)
 mainFrame.Name = "MainFrame"
 mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 25)
@@ -154,7 +145,6 @@ title.BackgroundTransparency = 1
 title.Position = UDim2.new(0.05, 0, 0.01, 0)
 title.Size = UDim2.new(0.9, 0, 0.15, 0)
 
--- Scrolling Frame for Script Buttons
 local scroll = Instance.new("ScrollingFrame", mainFrame)
 scroll.BackgroundTransparency = 1
 scroll.Size = UDim2.new(1, -20, 0.65, 0)
@@ -174,7 +164,6 @@ layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 20)
 end)
 
--- Page Buttons Frame
 local pageButtonsFrame = Instance.new("Frame", mainFrame)
 pageButtonsFrame.Name = "PageButtonsFrame"
 pageButtonsFrame.BackgroundTransparency = 1
@@ -192,19 +181,19 @@ pageBtn.BorderColor3 = Color3.fromRGB(255, 215, 0)
 pageBtn.Size = UDim2.new(0, 30, 0, 30)
 Instance.new("UICorner", pageBtn).CornerRadius = UDim.new(0, 6)
 
--- Script Buttons Data (empty button removed)
 local buttonsPagesData = {{
-    {Text = "Instant Spawn", ScriptLink = "https://pastebin.com/raw/CYa08iQL"},
+    {Text = "Instant Spawn", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/6c6a1996b7efda399ee6c667a0e96510/raw/dce1e15f00e12059b72516403f01401d950913cf/gistfile1.txt"},
+    {Text = "", ScriptLink = ""},
     {Text = "No cooldown 75%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/246d84003ec77b3348b785f4c4b40951/raw/2e03b6f231e8ddeba6c7e40afedd919907138ddf/gistfile1.txt"},
-    {Text = "No cooldown 100%", ScriptLink = "https://pastebin.com/raw/Qxnj4RG9"},
+    {Text = "No cooldown 100%", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/6ef6b257e0b73fb796474c0cd331cd55/raw/d929d2510011d020196334e66c7ad8149d4899bc/gistfile1.txt"},
     {Text = "Aura", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/69cd1fb21a09185e359a3eb706108aa9/raw/94e203ae28989cbe5c4c5fa2f9bf0f1263937738/gistfile1.txt"},
     {Text = "No clip for damage hitbox", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/04661c54b473431b9ab554de484e1e1f/raw/2a08e9b05c7cd4c64001138728a6b3c316a805e7/gistfile1.txt"},
-    {Text = "grab base", ScriptLink = "https://pastebin.com/raw/9bjVihxp"},
+    {Text = "Script 7", ScriptLink = "https://pastebin.com/raw/example7"},
     {Text = "Script 8", ScriptLink = "https://pastebin.com/raw/example8"},
     {Text = "Script 9", ScriptLink = "https://pastebin.com/raw/example9"},
     {Text = "Auto grab", ScriptLink = "https://gist.githubusercontent.com/Yuyyiyy/eb3b21915928414653a2b8dd9a40980e/raw/782a51c0004924e47d86c0c008acd280e5af16c3/gistfile1.txt"},
     {Text = "spt auto grab", ScriptLink = "https://pastebin.com/raw/MHN7tVU8"},
-    {Text = " loopbring", ScriptLink = "https://pastebin.com/QBqps63Y"},
+    {Text = "loopbring", ScriptLink = "https://pastebin.com/raw/QBqps63Y"},
     {Text = "usetools", ScriptLink = "https://pastebin.com/raw/fnGNW8Lk"},
     {Text = "damage kill", ScriptLink = "https://pastebin.com/raw/MFr8E9ag"},
     {Text = "Damage hitbox", ScriptLink = "https://pastebin.com/raw/63T2aMVi"},
@@ -230,36 +219,38 @@ local function createScriptButtons(page)
     local pageData = buttonsPagesData[page]
     for index = 1, #pageData do
         local data = pageData[index]
-        local button = Instance.new("TextButton", scroll)
-        button.Name = "ScriptButton" .. index
-        button.TextWrapped = true
-        button.TextYAlignment = Enum.TextYAlignment.Center
-        button.Text = data.Text
-        button.Font = Enum.Font.SourceSansSemibold
-        button.TextColor3 = Color3.fromRGB(255, 215, 0)
-        button.TextSize = 20
-        button.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
-        button.BorderColor3 = Color3.fromRGB(255, 215, 0)
-        button.AutoButtonColor = true
-        button.Size = UDim2.new(0, 140, 0, 50)
+        if data.Text ~= "" then
+            local button = Instance.new("TextButton", scroll)
+            button.Name = "ScriptButton" .. index
+            button.TextWrapped = true
+            button.TextYAlignment = Enum.TextYAlignment.Center
+            button.Text = data.Text
+            button.Font = Enum.Font.SourceSansSemibold
+            button.TextColor3 = Color3.fromRGB(255, 215, 0)
+            button.TextSize = 20
+            button.BackgroundColor3 = Color3.fromRGB(15, 15, 30)
+            button.BorderColor3 = Color3.fromRGB(255, 215, 0)
+            button.AutoButtonColor = true
+            button.Size = UDim2.new(0, 140, 0, 50)
 
-        local btnCorner = Instance.new("UICorner", button)
-        btnCorner.CornerRadius = UDim.new(0, 8)
+            local btnCorner = Instance.new("UICorner", button)
+            btnCorner.CornerRadius = UDim.new(0, 8)
 
-        local btnStroke = Instance.new("UIStroke", button)
-        btnStroke.Thickness = 1.5
-        btnStroke.Color = Color3.fromRGB(184, 134, 11)
-        btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+            local btnStroke = Instance.new("UIStroke", button)
+            btnStroke.Thickness = 1.5
+            btnStroke.Color = Color3.fromRGB(184, 134, 11)
+            btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
-        button.MouseButton1Click:Connect(function()
-            print(data.Text .. " button clicked")
-            local success, err = pcall(function()
-                loadstring(game:HttpGet(data.ScriptLink))()
+            button.MouseButton1Click:Connect(function()
+                print(data.Text .. " button clicked")
+                local success, err = pcall(function()
+                    loadstring(game:HttpGet(data.ScriptLink))()
+                end)
+                if not success then
+                    warn("Failed to load script:", err)
+                end
             end)
-            if not success then
-                warn("Failed to load script:", err)
-            end
-        end)
+        end
     end
 end
 
@@ -268,10 +259,8 @@ pageBtn.MouseButton1Click:Connect(function()
     createScriptButtons(currentPage)
 end)
 
--- Initial buttons load
 createScriptButtons(currentPage)
 
--- Toggle Main Frame Visibility on toggleButton click
 toggleButton.MouseButton1Click:Connect(function()
     mainFrame.Visible = not mainFrame.Visible
 end)
